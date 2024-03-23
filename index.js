@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { faker } = require('@faker-js/faker');
 const routesApi = require('./routes');
 const {
@@ -12,6 +13,18 @@ const port = 3000;
 
 //recibir datos en formato json
 app.use(express.json());
+//recibir varios dominios
+const whitelist = ['http://localhost:8080 ', 'https://myapp.co'];
+const options = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido'));
+    }
+  },
+};
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
